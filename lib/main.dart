@@ -84,23 +84,49 @@ class _MyAppState extends State<MyApp> {
     // {} 為一個 Map with key and value
     {
       'questionText': 'Q1 : What\'s your favorite color?',
-      'answers': ['Black', 'Red', 'Green', 'White'] //value 也可以是一個list
+      'answers': [
+        {'text': 'Black', 'score': 10},
+        {'text': 'Red', 'score': 5},
+        {'text': 'Green', 'score': 3},
+        {'text': 'White', 'score': 1},
+      ] //value 也可以是一個list
     },
     {
       'questionText': 'Q2 : What\'s your favorite animal ?',
-      'answers': ['Rebbit', 'Snack', 'Elephant', 'Lion'] //value 也可以是一個list
+      'answers': [
+        {'text': 'Rabbit', 'score': 3},
+        {'text': 'Snack', 'score': 11},
+        {'text': 'Elephant', 'score': 5},
+        {'text': 'Lion', 'score': 9},
+      ] //value 也可以是一個list
     },
     {
       'questionText': 'Q3 : What\'s your favorite instructor ?',
-      'answers': ['Max', 'Max', 'Max', 'Max'] //value 也可以是一個list
+      'answers': [
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+      ] //value 也可以是一個list
     },
   ];
 
   // questions = []; does not work if questions is a const
 
-  void _answerQuestion() {
+  int _totalScore = 0;
+
+  void _resetQuiz() {
+    // setState 不可或缺！將會retrigger state
+    setState(() {
+      _questionIdx = 0;
+      _totalScore = 0;
+    });
+  }
+
+  void _answerQuestion(int score) {
     print('問題:' + _questions[_questionIdx]['questionText']);
     //print('選擇的答案-->' + answer);
+    _totalScore += score;
 
     // 重要：透過setState 這個匿名函式去改變state
     setState(() {
@@ -113,6 +139,7 @@ class _MyAppState extends State<MyApp> {
         _questions.length.toString() +
         ' 個元素'); // number of elements in array
         */
+    print('_totalScore = ' + _totalScore.toString());
   }
 
   @override
@@ -132,7 +159,7 @@ class _MyAppState extends State<MyApp> {
                 answerQuestion: _answerQuestion,
                 questionIdx: _questionIdx,
               )
-            : Result(),
+            : Result(_totalScore, _resetQuiz),
       ),
     );
   }

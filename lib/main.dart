@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import './question.dart'; // ./代表在跟main.dart同一個資料夾底下去找
-
+import './answer.dart';
 /**
- * 重要章節可再複習一次：第36講
+ * 重要章節可再複習一次：第36講, 第45講, 第46講, 
  * 複製同行 shift + option + 方向鍵
  * 
  *  */
@@ -71,43 +71,81 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _questionIdx = 0; // 加上底線代表private 只在MyAppState內部使用
 
-  var _questions = [
-    'Q1 : What\'s your favorite color?',
-    'Q2 : What\'s your favorite animal???????'
+  /**
+   * 重要觀念 第46講
+   * final --> runtime constant
+   * const --> compile time constant
+   * compile time constant also implicitly means runtime constant
+  */
+
+  final _questions = const [
+    // {} 為一個 Map with key and value
+    {
+      'questionText': 'Q1 : What\'s your favorite color?',
+      'answers': ['Black', 'Red', 'Green', 'White'] //value 也可以是一個list
+    },
+    {
+      'questionText': 'Q2 : What\'s your favorite animal ?',
+      'answers': ['Rebbit', 'Snack', 'Elephant', 'Lion'] //value 也可以是一個list
+    },
+    {
+      'questionText': 'Q3 : What\'s your favorite instructor ?',
+      'answers': ['Max', 'Max', 'Max', 'Max'] //value 也可以是一個list
+    },
   ];
 
-  void answerQuestion() {
+  // questions = []; does not work if questions is a const
+
+  void _answerQuestion() {
+    print('問題:' + _questions[_questionIdx]['questionText']);
+    //print('選擇的答案-->' + answer);
+
     // 重要：透過setState 這個匿名函式去改變state
     setState(() {
       _questionIdx++;
     });
+    /*
     print('answer choosed!!!');
     print('questionIdx = ' + _questionIdx.toString()); // 數字轉字串
     print('questions array 有 ' +
         _questions.length.toString() +
         ' 個元素'); // number of elements in array
+        */
   }
 
   @override
   Widget build(BuildContext context) {
+    final dummy = ['Hello'];
+    dummy.add('Max');
+    print(dummy);
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text('My First app'),
         ),
-        body: Column(
-          children: [
-            Text('The answer!'),
-            //Text(questions.elementAt(0)), // 陣列元素取法
-            // Text(_questions.elementAt(_questionIdx)),
-            // 改用Question去表達題目
-            Question(
-              _questions[_questionIdx],
-            ),
-            RaisedButton(
-              child: Text('Answer 1'),
-              onPressed: answerQuestion,
-            ),
+        body: (_questionIdx < _questions.length)
+            ? Column(
+                children: [
+                  Text('The answer!'),
+                  //Text(questions.elementAt(0)), // 陣列元素取法
+                  // Text(_questions.elementAt(_questionIdx)),
+                  // 改用Question去表達題目
+                  Question(
+                    _questions[_questionIdx]['questionText'],
+                  ),
+                  // ...這個operator有點難懂 第45講 建議再看一次
+                  // 告知Dart 這些answers是一個List<String>
+                  ...(_questions[_questionIdx]['answers'] as List<String>)
+                      .map((answer) {
+                    return Answer(_answerQuestion, answer);
+                  }).toList()
+                  /*
+            Answer(_answerQuestion),
+            Answer(_answerQuestion),
+            Answer(_answerQuestion),
+            */
+                  /*
             RaisedButton(
               child: Text('Answer 2'),
               // anonymous function 也可以用匿名函式
@@ -120,8 +158,12 @@ class _MyAppState extends State<MyApp> {
                 print('Answer 3 hello QQQQ');
               },
             ),
-          ],
-        ),
+          */
+                ],
+              )
+            : Center(
+                child: Text('You did it!'),
+              ),
       ),
     );
   }

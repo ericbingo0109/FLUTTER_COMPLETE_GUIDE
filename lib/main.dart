@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import './quiz.dart';
+import './result.dart';
 
 import './question.dart'; // ./代表在跟main.dart同一個資料夾底下去找
 import './answer.dart';
@@ -125,45 +127,12 @@ class _MyAppState extends State<MyApp> {
           title: Text('My First app'),
         ),
         body: (_questionIdx < _questions.length)
-            ? Column(
-                children: [
-                  Text('The answer!'),
-                  //Text(questions.elementAt(0)), // 陣列元素取法
-                  // Text(_questions.elementAt(_questionIdx)),
-                  // 改用Question去表達題目
-                  Question(
-                    _questions[_questionIdx]['questionText'],
-                  ),
-                  // ...這個operator有點難懂 第45講 建議再看一次
-                  // 告知Dart 這些answers是一個List<String>
-                  ...(_questions[_questionIdx]['answers'] as List<String>)
-                      .map((answer) {
-                    return Answer(_answerQuestion, answer);
-                  }).toList()
-                  /*
-            Answer(_answerQuestion),
-            Answer(_answerQuestion),
-            Answer(_answerQuestion),
-            */
-                  /*
-            RaisedButton(
-              child: Text('Answer 2'),
-              // anonymous function 也可以用匿名函式
-              onPressed: () => print('Answer 2 chosen~~~'),
-            ),
-            RaisedButton(
-              child: Text('Answer 3'),
-              // 這樣也是匿名函式的寫法
-              onPressed: () {
-                print('Answer 3 hello QQQQ');
-              },
-            ),
-          */
-                ],
+            ? Quiz(
+                questions: _questions,
+                answerQuestion: _answerQuestion,
+                questionIdx: _questionIdx,
               )
-            : Center(
-                child: Text('You did it!'),
-              ),
+            : Result(),
       ),
     );
   }
